@@ -112,13 +112,16 @@ def main():
         print("Could not find the course root folder!")
         sys.exit(1)
 
-    github_folder_name = "GitHub_Replica"
-    # Create or get our GitHub_Replica folder
-    top_level_folder = get_or_create_canvas_folder(github_folder_name, course_root)
+    # Get repository name from the local path
+    local_repo_path = Path(ROOT_LOCAL_PATH).resolve()
+    repo_name = local_repo_path.name
+    print(f"Using repository name as root folder: {repo_name}")
+
+    # Create or get our repository folder
+    top_level_folder = get_or_create_canvas_folder(repo_name, course_root)
 
     # 2. Recursively replicate local repo directories & files into Canvas
-    local_repo_path = Path(ROOT_LOCAL_PATH).resolve()
-    print(f"Starting replication from {local_repo_path} to Canvas folder '{github_folder_name}'...")
+    print(f"Starting replication from {local_repo_path} to Canvas folder '{repo_name}'...")
     replicate_directory_to_canvas(str(local_repo_path), top_level_folder)
     print("Replication complete.")
 
