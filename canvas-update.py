@@ -83,13 +83,30 @@ def upload_file_to_canvas(local_file_path, canvas_folder):
         print(f"SUCCESS: {local_file_path} uploaded as {response['filename']} (ID {response['id']}).")
 
 # ------------------------------------------------------------------------------
+# Utility: Get the root folder in a Canvas course
+# ------------------------------------------------------------------------------
+def get_root_folder(course):
+    """
+    Return the folder in the course whose 'parent_folder_id' is None.
+    This is effectively the 'root' folder in Canvas.
+    """
+    folders = course.get_folders()
+    for f in folders:
+        if f.parent_folder_id is None:
+            return f
+    return None  # If none found, return None
+
+# ------------------------------------------------------------------------------
 # Main Execution
 # ------------------------------------------------------------------------------
 def main():
     # 1. Get or create the root folder in Canvas where we want the repo to live.
     #    By default, 'course.root_folder' is the top-level folder. But you might
     #    want a dedicated subfolder, e.g. "GitHub_Replica".
-    root_canvas_folder = course.get_root_folder()
+    root_canvas_folder = get_root_folder(course)
+    if not root_canvas_folder:
+        print("No root folder found for this course!")
+        sys.exit(1)
     github_folder_name = "GitHub_Replica"  # or any name you like
     top_level_folder = get_or_create_canvas_folder(github_folder_name, root_canvas_folder)
 
