@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: yourusername/canvas-sync-action@latest
+      - uses: yourusername/canvas-sync-action@v1.0.0
         with:
           canvas_api_url: ${{ secrets.CANVAS_API_URL }}
           canvas_api_key: ${{ secrets.CANVAS_API_KEY }}
