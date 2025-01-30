@@ -1,0 +1,32 @@
+name: Sync Repo to Canvas
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install canvasapi
+
+      - name: Sync to Canvas
+        env:
+          CANVAS_API_URL: ${{ secrets.CANVAS_API_URL }}
+          CANVAS_API_KEY: ${{ secrets.CANVAS_API_KEY }}
+          CANVAS_COURSE_ID: ${{ secrets.CANVAS_COURSE_ID }}
+          # Optional: If your script expects a different local path:
+          LOCAL_REPO_PATH: .
+        run: |
+          python canvas-update.py
