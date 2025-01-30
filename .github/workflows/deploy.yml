@@ -23,9 +23,9 @@ jobs:
 
       - name: Sync to Canvas
         env:
-          CANVAS_API_URL: ${{ secrets.CANVAS_API_URL }}
+          CANVAS_API_URL: ${{ variables.CANVAS_API_URL }}
           CANVAS_API_KEY: ${{ secrets.CANVAS_API_KEY }}
-          CANVAS_COURSE_ID: ${{ secrets.CANVAS_COURSE_ID }}
+          CANVAS_COURSE_ID: ${{ variables.CANVAS_COURSE_ID }}
           # Optional: If your script expects a different local path:
           LOCAL_REPO_PATH: .
         run: |
