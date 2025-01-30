@@ -1,13 +1,9 @@
-#!/usr/bin/env python3
 import os
 import sys
 import mimetypes
 from pathlib import Path
 from canvasapi import Canvas
 
-# ------------------------------------------------------------------------------
-# Configuration: Read these from env vars or hardcode (not recommended)
-# ------------------------------------------------------------------------------
 API_URL = os.getenv("CANVAS_API_URL")  # e.g. "https://<your-domain>.instructure.com"
 API_KEY = os.getenv("CANVAS_API_KEY")  # Canvas Access Token (secret!)
 COURSE_ID = os.getenv("CANVAS_COURSE_ID")  # e.g. "123456"
@@ -17,15 +13,11 @@ if not API_URL or not API_KEY or not COURSE_ID:
     print("Missing required environment variables (CANVAS_API_URL, CANVAS_API_KEY, CANVAS_COURSE_ID).")
     sys.exit(1)
 
-# ------------------------------------------------------------------------------
 # Initialize Canvas
-# ------------------------------------------------------------------------------
 canvas = Canvas(API_URL, API_KEY)
 course = canvas.get_course(COURSE_ID)
 
-# ------------------------------------------------------------------------------
-# Utility: Get or create a Canvas folder by name & parent_folder_id
-# ------------------------------------------------------------------------------
+# Get or create a Canvas folder by name & parent_folder_id
 def get_or_create_canvas_folder(folder_name, parent_folder):
     """
     Return a Canvas folder object with the given name under the parent_folder.
@@ -41,9 +33,7 @@ def get_or_create_canvas_folder(folder_name, parent_folder):
     new_folder = parent_folder.create_folder({"name": folder_name})
     return new_folder
 
-# ------------------------------------------------------------------------------
-# Recursive function: replicate a local directory to a Canvas folder
-# ------------------------------------------------------------------------------
+# Replicate a local directory to a Canvas folder
 def replicate_directory_to_canvas(local_path, canvas_folder):
     """
     For each subdirectory in local_path, create/find a matching Canvas folder.
@@ -63,9 +53,7 @@ def replicate_directory_to_canvas(local_path, canvas_folder):
 
             upload_file_to_canvas(entry.path, canvas_folder)
 
-# ------------------------------------------------------------------------------
 # Upload a single file to Canvas
-# ------------------------------------------------------------------------------
 def upload_file_to_canvas(local_file_path, canvas_folder):
     """
     Uploads a local file to the specified Canvas folder.
@@ -82,9 +70,7 @@ def upload_file_to_canvas(local_file_path, canvas_folder):
     else:
         print(f"SUCCESS: {local_file_path} uploaded as {response['filename']} (ID {response['id']}).")
 
-# ------------------------------------------------------------------------------
 # Utility: Get the root folder in a Canvas course
-# ------------------------------------------------------------------------------
 def get_root_folder(course):
     """
     Return the folder in the course whose 'parent_folder_id' is None.
@@ -96,9 +82,7 @@ def get_root_folder(course):
             return f
     return None  # If none found, return None
 
-# ------------------------------------------------------------------------------
 # Main Execution
-# ------------------------------------------------------------------------------
 def main():
     # 1. Get or create the root folder in Canvas where we want the repo to live.
     #    By default, 'course.root_folder' is the top-level folder. But you might
