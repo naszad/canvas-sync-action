@@ -1,0 +1,25 @@
+name: 'Canvas Sync Action'
+description: 'Syncs a GitHub repository to Canvas LMS'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+
+inputs:
+  canvas_api_url:
+    description: 'Canvas API URL (e.g., https://canvas.instructure.com)'
+    required: true
+  canvas_api_key:
+    description: 'Canvas API Key'
+    required: true
+  canvas_course_id:
+    description: 'Canvas Course ID'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    CANVAS_API_URL: ${{ inputs.canvas_api_url }}
+    CANVAS_API_KEY: ${{ inputs.canvas_api_key }}
+    CANVAS_COURSE_ID: ${{ inputs.canvas_course_id }}
+    LOCAL_REPO_PATH: '/github/workspace' 

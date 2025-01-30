@@ -12,21 +12,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        run: |
-          pip install canvasapi
-
       - name: Sync to Canvas
-        env:
-          CANVAS_API_URL: ${{ secrets.CANVAS_API_URL }}
-          CANVAS_API_KEY: ${{ secrets.CANVAS_API_KEY }}
-          CANVAS_COURSE_ID: ${{ secrets.CANVAS_COURSE_ID }}
-          # Optional: If your script expects a different local path:
-          LOCAL_REPO_PATH: .
-        run: |
-          python canvas-update.py
+        uses: ./ # Use local action
+        with:
+          canvas_api_url: ${{ secrets.CANVAS_API_URL }}
+          canvas_api_key: ${{ secrets.CANVAS_API_KEY }}
+          canvas_course_id: ${{ secrets.CANVAS_COURSE_ID }}
