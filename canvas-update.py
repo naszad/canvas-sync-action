@@ -84,15 +84,21 @@ def get_root_folder(course):
 
 # Main Execution
 def main():
-    # 1. Get or create the root folder in Canvas where we want the repo to live.
-    #    By default, 'course.root_folder' is the top-level folder. But you might
-    #    want a dedicated subfolder, e.g. "GitHub_Replica".
-    root_canvas_folder = get_root_folder(course)
-    if not root_canvas_folder:
-        print("No root folder found for this course!")
+    # 1. Get the course's root folder
+    root_canvas_folder = course.get_folders()
+    course_root = None
+    for folder in root_canvas_folder:
+        if folder.full_name == "course files":
+            course_root = folder
+            break
+    
+    if not course_root:
+        print("Could not find the course root folder!")
         sys.exit(1)
-    github_folder_name = "GitHub_Replica"  # or any name you like
-    top_level_folder = get_or_create_canvas_folder(github_folder_name, root_canvas_folder)
+
+    github_folder_name = "GitHub_Replica"
+    # Create or get our GitHub_Replica folder
+    top_level_folder = get_or_create_canvas_folder(github_folder_name, course_root)
 
     # 2. Recursively replicate local repo directories & files into Canvas
     local_repo_path = Path(ROOT_LOCAL_PATH).resolve()
