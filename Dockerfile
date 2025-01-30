@@ -1,8 +1,7 @@
 FROM python:3.9-slim
 
 # Install dependencies
-COPY requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+RUN pip install canvasapi>=3.0.0
 
 # Copy our sync script
 COPY canvas-update.py /canvas-update.py
