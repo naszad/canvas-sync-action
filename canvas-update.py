@@ -23,14 +23,19 @@ def get_or_create_canvas_folder(folder_name, parent_folder):
     Return a Canvas folder object with the given name under the parent_folder.
     If it doesn't exist, create it.
     """
+    print(f"Attempting to create/get folder '{folder_name}' under parent '{parent_folder.name}'")
+    
     # Check if folder already exists
     subfolders = parent_folder.get_folders()
     for sf in subfolders:
         if sf.name == folder_name:
+            print(f"Found existing folder: {sf.name} (ID: {sf.id})")
             return sf  # found existing folder
 
     # If not found, create a new folder
-    new_folder = parent_folder.create_folder({"name": folder_name})
+    print(f"Creating new folder '{folder_name}'")
+    new_folder = parent_folder.create_folder(name=folder_name)
+    print(f"Created folder: {new_folder.name} (ID: {new_folder.id})")
     return new_folder
 
 # Replicate a local directory to a Canvas folder
@@ -39,18 +44,24 @@ def replicate_directory_to_canvas(local_path, canvas_folder):
     For each subdirectory in local_path, create/find a matching Canvas folder.
     For each file, upload it into the canvas_folder.
     """
+    print(f"\nProcessing directory: {local_path}")
+    print(f"Current Canvas folder: {canvas_folder.name} (ID: {canvas_folder.id})")
+    
     for entry in os.scandir(local_path):
         if entry.is_dir():
             # Skip .git or other hidden folders
             if entry.name.startswith("."):
                 continue
+            print(f"\nProcessing subdirectory: {entry.name}")
             subfolder = get_or_create_canvas_folder(entry.name, canvas_folder)
+            if subfolder.name != entry.name:
+                print(f"WARNING: Created folder name mismatch! Expected: {entry.name}, Got: {subfolder.name}")
             replicate_directory_to_canvas(entry.path, subfolder)
         elif entry.is_file():
             # Skip hidden files or files that shouldn't be uploaded
             if entry.name.startswith("."):
                 continue
-
+            print(f"\nUploading file: {entry.name}")
             upload_file_to_canvas(entry.path, canvas_folder)
 
 # Upload a single file to Canvas
@@ -59,16 +70,21 @@ def upload_file_to_canvas(local_file_path, canvas_folder):
     Uploads a local file to the specified Canvas folder.
     If a file with the same name already exists in Canvas, it will be replaced.
     """
-    print(f"Uploading {local_file_path} to folder '{canvas_folder.name}'...")
+    file_name = os.path.basename(local_file_path)
+    print(f"Uploading {file_name} to folder '{canvas_folder.name}' (ID: {canvas_folder.id})")
 
     # canvasapi Folder object has an .upload() method that handles the file upload
-    # returns (status, response)
-    status, response = canvas_folder.upload(local_file_path)
-
-    if status != "ready":
-        print(f"WARNING: Upload for {local_file_path} returned status '{status}'.")
-    else:
-        print(f"SUCCESS: {local_file_path} uploaded as {response['filename']} (ID {response['id']}).")
+    try:
+        status, response = canvas_folder.upload(local_file_path)
+        print(f"Upload response - Status: {status}")
+        print(f"Response details: {response}")
+        
+        if status != "ready":
+            print(f"WARNING: Upload for {file_name} returned status '{status}'.")
+        else:
+            print(f"SUCCESS: {file_name} uploaded as {response['filename']} (ID {response['id']}).")
+    except Exception as e:
+        print(f"ERROR uploading {file_name}: {str(e)}")
 
 # Utility: Get the root folder in a Canvas course
 def get_root_folder(course):
