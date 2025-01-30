@@ -11,7 +11,7 @@ CANVAS_API_KEY: "your-api-key"
 CANVAS_COURSE_ID: "your-course-id"
 ```
 
-2. Create `.github/workflows/canvas-sync.yml`:
+2. With the following format, create `.github/workflows/canvas-sync.yml`:
 ```yaml
 name: Sync to Canvas
 on:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: yourusername/canvas-sync-action@v1
+      - uses: yourusername/canvas-sync-action@latest
         with:
           canvas_api_url: ${{ secrets.CANVAS_API_URL }}
           canvas_api_key: ${{ secrets.CANVAS_API_KEY }}
